@@ -2,6 +2,11 @@
 <meta charset="utf-8">
 <style>
 
+h1 {
+  font: 20px serif;
+  text-align: center
+}
+
 .bar {
   fill: grey;
 }
@@ -11,7 +16,7 @@
 }
 
 .axis {
-  font: 6px sans-serif;
+  font: 7px sans-serif;
 }
 
 .axis path,
@@ -26,12 +31,20 @@
 }
 
 </style>
+
 <body>
+
+<h1>
+<p>
+The Gaokao Factor: 2013 Gaokao Acceptance Rate in China
+</p>
+</h1>
+
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script>
 
-var margin = {top: 40, right: 40, bottom: 60, left: 80},
-    width = 960 - margin.left - margin.right,
+var margin = {top: 40, right: 200, bottom: 60, left: 200},
+    width = 1500 - margin.left - margin.right,
     height = 500 - margin.top - margin.bottom;
 
 var x = d3.scale.ordinal()
@@ -56,8 +69,8 @@ var svg = d3.select("body").append("svg")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 d3.tsv("gaokao.tsv", type, function(error, data) {
-  x.domain(data.map(function(d) { return d.letter; }));
-  y.domain([0, d3.max(data, function(d) { return d.frequency; })]);
+  x.domain(data.map(function(d) { return d.city; }));
+  y.domain([0, d3.max(data, function(d) { return d.percentage; })]);
 
   svg.append("g")
       .attr("class", "x axis")
@@ -72,21 +85,21 @@ d3.tsv("gaokao.tsv", type, function(error, data) {
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Frequency");
+      .text("Percentage");
 
   svg.selectAll(".bar")
       .data(data)
     .enter().append("rect")
       .attr("class", "bar")
-      .attr("x", function(d) { return x(d.letter); })
+      .attr("x", function(d) { return x(d.city); })
       .attr("width", x.rangeBand())
-      .attr("y", function(d) { return y(d.frequency); })
-      .attr("height", function(d) { return height - y(d.frequency); });
+      .attr("y", function(d) { return y(d.percentage); })
+      .attr("height", function(d) { return height - y(d.percentage); });
 
 });
 
 function type(d) {
-  d.frequency = +d.frequency;
+  d.percentage = +d.percentage;
   return d;
 }
 
